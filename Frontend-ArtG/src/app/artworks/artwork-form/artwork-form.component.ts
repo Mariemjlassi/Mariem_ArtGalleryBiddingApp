@@ -29,13 +29,23 @@ export class ArtworkFormComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
+  
+  private toLocal(d: Date): string {
+    return d.toISOString().slice(0, 16);
+  }
+
   ngOnInit(): void {
+    const now      = new Date();
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
     this.form = this.fb.group({
-      title: ['', Validators.required],
-      imageUrl: ['', Validators.required],
-      tags: [[]],
+      title:         ['', Validators.required],
+      imageUrl:      ['', Validators.required],
+      tags:          [[]],
       startingPrice: [1, [Validators.required, Validators.min(1)]],
-      ownerId: [1]
+      
+      auctionStart:  [this.toLocal(now)],
+      auctionEnd:    [this.toLocal(tomorrow)]
     });
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -43,7 +53,12 @@ export class ArtworkFormComponent implements OnInit {
       this.isEditMode = true;
       this.artworkId = +id;
       this.artworkService.getById(this.artworkId).subscribe({
-        next: (data) => this.form.patchValue(data),
+        next: (data) => this.form.patchValue({
+          ...data,
+          
+          auctionStart: data.auctionStart ? data.auctionStart.slice(0, 16) : '',
+          auctionEnd:   data.auctionEnd   ? data.auctionEnd.slice(0, 16)   : ''
+        }),
         error: () => this.router.navigate(['/artworks'])
       });
     }

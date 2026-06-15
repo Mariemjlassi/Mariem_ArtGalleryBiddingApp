@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ArtworkService } from '../services/artwork.service';
 import { Artwork } from '../models/artwork';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../auth/services/auth.service';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class ArtworkListComponent implements OnInit {
 
   constructor(
     private artworkService: ArtworkService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {

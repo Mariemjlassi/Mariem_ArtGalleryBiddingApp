@@ -1,1 +1,39 @@
-<router-outlet></router-outlet>
+<nav class="navbar">
+  <div class="nav-inner">
+
+    <a routerLink="/artworks" class="nav-brand">
+      <span class="brand-accent">A</span>RTHAUS
+    </a>
+
+    <div class="nav-center">
+      <a routerLink="/artworks" class="nav-link">Collection</a>
+      @if (authService.isLoggedIn()) {
+        <a routerLink="/artworks/new" class="nav-link nav-cta">+ Exposer</a>
+      }
+    </div>
+
+    <div class="nav-right">
+      @if (authService.isLoggedIn()) {
+        @if (authService.currentUser(); as user) {
+          <span class="nav-username">{{ user.name }}</span>
+          <span class="nav-wallet">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            {{ user.wallet }} coins
+          </span>
+        }
+        <button class="nav-logout" (click)="authService.logout()">Déconnexion</button>
+      } @else {
+        <a routerLink="/login" class="nav-ghost">Connexion</a>
+        <a routerLink="/register" class="nav-solid">S'inscrire</a>
+      }
+    </div>
+
+  </div>
+</nav>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

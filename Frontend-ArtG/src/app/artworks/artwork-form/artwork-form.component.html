@@ -1,61 +1,108 @@
-
 <div class="form-page">
-  <div class="form-card">
+  <div class="form-layout">
 
-    <h2>{{ isEditMode ? '✏️ Modifier' : '🖼️ Ajouter' }} un Artwork</h2>
+    <div class="form-header">
+      <a routerLink="/artworks" class="back-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Collection
+      </a>
+      <h1 class="form-title">{{ isEditMode ? 'Modifier l\'oeuvre' : 'Exposer une oeuvre' }}</h1>
+      <p class="form-sub">{{ isEditMode ? 'Mettez à jour les informations' : 'Partagez votre création avec la galerie' }}</p>
+    </div>
 
-    @if (errorMsg) {
-      <div class="alert-error">{{ errorMsg }}</div>
-    }
+    <div class="form-card">
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (errorMsg) {
+        <div class="form-alert">{{ errorMsg }}</div>
+      }
 
-      <div class="field">
-        <label>Titre</label>
-        <input formControlName="title" type="text" placeholder="Titre de l'artwork" />
-        @if (title.invalid && title.touched) {
-          <small>Titre requis</small>
-        }
-      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="art-form">
 
-      <div class="field">
-        <label>URL de l'image</label>
-        <input formControlName="imageUrl" type="text" placeholder="https://..." />
-        @if (imageUrl.invalid && imageUrl.touched) {
-          <small>URL requise</small>
-        }
-      </div>
-
-      <div class="field">
-        <label>Tags</label>
-        <div class="tag-group">
-          @for (tag of tagOptions; track tag) {
-            <button
-              type="button"
-              [class]="isTagSelected(tag) ? 'tag-btn active' : 'tag-btn'"
-              (click)="toggleTag(tag)"
-            >
-              {{ tag }}
-            </button>
+        <div class="f-field">
+          <label class="f-label">Titre de l'oeuvre</label>
+          <input
+            formControlName="title"
+            type="text"
+            placeholder="ex. Crépuscule sur la Seine"
+            class="f-input"
+            [class.invalid]="title.invalid && title.touched"
+          />
+          @if (title.invalid && title.touched) {
+            <span class="f-error">Le titre est requis</span>
           }
         </div>
-      </div>
 
-      <div class="field">
-        <label>Prix de départ (coins)</label>
-        <input formControlName="startingPrice" type="number" min="1" />
-        @if (startingPrice.invalid && startingPrice.touched) {
-          <small>Prix requis (min 1)</small>
-        }
-      </div>
+        <div class="f-field">
+          <label class="f-label">URL de l'image</label>
+          <input
+            formControlName="imageUrl"
+            type="text"
+            placeholder="https://..."
+            class="f-input"
+            [class.invalid]="imageUrl.invalid && imageUrl.touched"
+          />
+          @if (imageUrl.invalid && imageUrl.touched) {
+            <span class="f-error">L'URL est requise</span>
+          }
+        </div>
 
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="loading">
-          {{ loading ? 'En cours...' : isEditMode ? 'Modifier' : 'Créer' }}
-        </button>
-        <a routerLink="/artworks" class="btn btn-secondary">Annuler</a>
-      </div>
+        <div class="f-field">
+          <label class="f-label">Catégorie</label>
+          <div class="tag-row">
+            @for (tag of tagOptions; track tag) {
+              <button
+                type="button"
+                [class]="isTagSelected(tag) ? 't-pill active' : 't-pill'"
+                (click)="toggleTag(tag)"
+              >{{ tag }}</button>
+            }
+          </div>
+        </div>
 
-    </form>
+        <div class="f-field">
+          <label class="f-label">Prix de départ <span class="f-unit">coins</span></label>
+          <input
+            formControlName="startingPrice"
+            type="number"
+            min="1"
+            class="f-input f-input-sm"
+            [class.invalid]="startingPrice.invalid && startingPrice.touched"
+          />
+          @if (startingPrice.invalid && startingPrice.touched) {
+            <span class="f-error">Prix requis (min. 1 coin)</span>
+          }
+        </div>
+
+        
+        <div class="f-divider">
+          <span class="f-divider-label">Enchère (optionnel)</span>
+        </div>
+
+        <div class="f-row">
+          <div class="f-field">
+            <label class="f-label">Début de l'enchère</label>
+            <input formControlName="auctionStart" type="datetime-local" class="f-input" />
+          </div>
+          <div class="f-field">
+            <label class="f-label">Fin de l'enchère</label>
+            <input formControlName="auctionEnd" type="datetime-local" class="f-input" />
+          </div>
+        </div>
+
+        <div class="f-actions">
+          <button type="submit" class="submit-btn" [disabled]="loading">
+            @if (loading) {
+              <span class="spinner"></span> En cours...
+            } @else {
+              {{ isEditMode ? 'Enregistrer' : 'Publier dans la galerie' }}
+            }
+          </button>
+          <a routerLink="/artworks" class="cancel-link">Annuler</a>
+        </div>
+
+      </form>
+    </div>
   </div>
 </div>

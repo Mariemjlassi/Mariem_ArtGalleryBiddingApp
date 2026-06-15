@@ -1,4 +1,3 @@
-
 <div class="page">
 
   <div class="page-header">
@@ -12,15 +11,63 @@
   @if (errorMsg()) {
     <div class="alert alert-error">{{ errorMsg() }}</div>
   }
+
+  <!-- FILTRES -->
+  <div class="filters">
+
+    <input
+      type="text"
+      placeholder="🔍 Rechercher par titre..."
+      [value]="searchQuery()"
+      (input)="onSearch($event)"
+      class="search-input"
+    />
+
+    <div class="tag-filters">
+      @for (tag of tagOptions; track tag) {
+        <button
+          [class]="selectedTag() === tag ? 'tag-btn active' : 'tag-btn'"
+          (click)="onTagChange(tag)"
+        >
+          {{ tag }}
+        </button>
+      }
+    </div>
+
+    <div class="price-filter">
+      <label>Prix max :</label>
+      <input
+        type="number"
+        placeholder="ex: 50"
+        [value]="maxPrice() ?? ''"
+        (input)="onMaxPriceChange($event)"
+        class="price-input"
+        min="0"
+      />
+      <span>coins</span>
+    </div>
+
+    <button class="btn btn-reset" (click)="resetFilters()">
+      ✕ Réinitialiser
+    </button>
+
+  </div>
+
+  <!-- RÉSULTAT -->
+  <p class="result-count">
+    {{ filteredArtworks().length }} artwork(s) trouvé(s)
+  </p>
+
   @if (loading()) {
     <div class="loading">Chargement...</div>
   }
-  @if (!loading() && artworks().length === 0) {
-    <div class="empty">Aucun artwork disponible.</div>
+
+  @if (!loading() && filteredArtworks().length === 0) {
+    <div class="empty">Aucun artwork ne correspond aux filtres.</div>
   }
 
   <div class="grid">
-    @for (artwork of artworks(); track artwork.id) {
+    @for (artwork of filteredArtworks(); track artwork.id) {
       <div class="card">
         <img
           [src]="artwork.imageUrl"
@@ -39,11 +86,12 @@
           <p class="card-date">{{ artwork.createdAt | date:'dd/MM/yyyy' }}</p>
         </div>
         <div class="card-footer">
-          <button class="btn btn-info" (click)="goToDetail(artwork.id)"> Voir</button>
-          <button class="btn btn-warning" (click)="goToEdit(artwork.id)">Modifier</button>
-          <button class="btn btn-danger" (click)="delete(artwork.id)">Supprimer</button>
+          <button class="btn btn-info" (click)="goToDetail(artwork.id)">👁 Voir</button>
+          <button class="btn btn-warning" (click)="goToEdit(artwork.id)">✏️ Modifier</button>
+          <button class="btn btn-danger" (click)="delete(artwork.id)">🗑 Supprimer</button>
         </div>
       </div>
     }
   </div>
+
 </div>

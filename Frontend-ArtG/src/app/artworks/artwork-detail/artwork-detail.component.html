@@ -1,0 +1,45 @@
+
+<div class="detail-page">
+
+  @if (loading()) {
+    <p class="loading">Chargement...</p>
+  }
+
+  @if (artwork()) {
+    <div class="detail-card">
+
+      <img
+        [src]="artwork()!.imageUrl"
+        [alt]="artwork()!.title"
+        class="detail-img"
+        (error)="$any($event.target).src='https://placehold.co/800x400/1a1a2e/ffffff?text=No+Image'"
+      />
+
+      <div class="detail-body">
+        <h1>{{ artwork()!.title }}</h1>
+        <p class="detail-price"> {{ artwork()!.startingPrice }} coins</p>
+
+        <div class="tags">
+          @for (tag of artwork()!.tags; track tag) {
+            <span class="tag">{{ tag }}</span>
+          }
+        </div>
+
+        <p class="detail-date">
+          Créé le {{ artwork()!.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+        </p>
+
+        <div class="detail-actions">
+          <a [routerLink]="['/artworks/edit', artwork()!.id]" class="btn btn-warning">
+            Modifier
+          </a>
+          <a routerLink="/artworks" class="btn btn-secondary">
+             Retour
+          </a>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

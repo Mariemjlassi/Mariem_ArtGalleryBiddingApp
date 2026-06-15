@@ -1,0 +1,61 @@
+
+<div class="form-page">
+  <div class="form-card">
+
+    <h2>{{ isEditMode ? '✏️ Modifier' : '🖼️ Ajouter' }} un Artwork</h2>
+
+    @if (errorMsg) {
+      <div class="alert-error">{{ errorMsg }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="field">
+        <label>Titre</label>
+        <input formControlName="title" type="text" placeholder="Titre de l'artwork" />
+        @if (title.invalid && title.touched) {
+          <small>Titre requis</small>
+        }
+      </div>
+
+      <div class="field">
+        <label>URL de l'image</label>
+        <input formControlName="imageUrl" type="text" placeholder="https://..." />
+        @if (imageUrl.invalid && imageUrl.touched) {
+          <small>URL requise</small>
+        }
+      </div>
+
+      <div class="field">
+        <label>Tags</label>
+        <div class="tag-group">
+          @for (tag of tagOptions; track tag) {
+            <button
+              type="button"
+              [class]="isTagSelected(tag) ? 'tag-btn active' : 'tag-btn'"
+              (click)="toggleTag(tag)"
+            >
+              {{ tag }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Prix de départ (coins)</label>
+        <input formControlName="startingPrice" type="number" min="1" />
+        @if (startingPrice.invalid && startingPrice.touched) {
+          <small>Prix requis (min 1)</small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          {{ loading ? 'En cours...' : isEditMode ? 'Modifier' : 'Créer' }}
+        </button>
+        <a routerLink="/artworks" class="btn btn-secondary">Annuler</a>
+      </div>
+
+    </form>
+  </div>
+</div>
